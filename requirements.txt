@@ -1,0 +1,3 @@
+Here some librairies and classes to install for this projet:
+- requests
+- Beautifulsoup4
