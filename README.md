@@ -1,7 +1,6 @@
 # P2_Python
 
-What you need for the Python Experience
-- installing requests: pip install request
-- installing Beautifulsoup4: pip install BeautifulSoup4
-- upgrading PIP: pip --upgrade pip
+Project Books to Scrape
 
+All algorithms implemented in Python (for education)
+These implementations are for learning purposes only. Therefore they may be less efficient than the implementations in the Python standard library.
