@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 import pandas as pd
+import urllib.request
 
 #First Part
 links = []
@@ -49,20 +50,17 @@ for link_cat in links_category:
         link = a['href']
         link = link.lstrip('./')
         book_urls.append('http://books.toscrape.com/catalogue/' + link)
-# print(book_urls)
-# print(len(book_urls))
 
-with open('urls.txt', 'w') as file:
+with open('P2_1_urls.txt', 'w') as file:
     for book_url in book_urls:
         file.write(book_url + '\n')
 
-
 # Second Part
-with open('urls.txt', 'r') as inf:
-    with open('booksP2.csv', 'w', newline='', encoding='utf-8-sig') as outfile:
+with open('P2_1_urls.txt', 'r') as inf:
+    with open('P2_2_books.csv', 'w', newline='', encoding='utf-8-sig') as outfile:
         fieldnames = ['category', 'title', 'product_page_url', 'universal_product_code', 'price_including_tax', 'price_excluding_tax','number_available', 'product_description','review_rating','image_url']
         writer = csv.DictWriter(outfile, fieldnames=fieldnames)
-        #writer.writeheader()
+
         for row in inf:
                 url = row.strip()
                 response = requests.get(url)
@@ -76,22 +74,23 @@ with open('urls.txt', 'r') as inf:
         
                    start_rating = soup.find('p', {'class': 'star-rating'})
                    review_rating = start_rating['class'][1]
-
+                   
                    image = soup.find('div', {'class': 'item active'}).find('img')
                    image_link = image['src']
+                   image_title = image['alt'].strip('/').replace('/', '')
+
+                   image_link = 'https://books.toscrape.com/'+ image_link.strip('./')
+                   urllib.request.urlretrieve(image_link, "books_images/"+image_title+".jpg")
 
                    list_p = soup.find('article', {'class': 'product_page'}).findAll('p')
                    product_description = list_p[3].text
 
                    tds = soup.findAll('td')
-                   price_including_tax = tds[3].text
-                   price_excluding_tax = tds[2].text
+                   price_including_tax = tds[3].text.strip('Â')
+                   price_excluding_tax = tds[2].text.strip('Â')
                    number_available = tds[5].text
-        #writer.writeheader()
+
                    writer.writerow({'category': category, 'title': str(title), 'product_page_url': str(url), 'universal_product_code': str(universal_product_code), 'price_including_tax': str(price_including_tax), 'price_excluding_tax': str(price_excluding_tax), 'number_available': str(number_available), 'product_description': str(product_description), 'review_rating': str(review_rating), 'image_url': str(image_link)})
 
-
-
-df = pd.read_csv("booksP2.csv", index_col=False, names=['category', 'title', 'product_page_url', 'universal_product_code', 'price_including_tax', 'price_excluding_tax','number_available', 'product_description','review_rating','image_url'])
-# print(df)
-df.to_csv('BooksP2DF.csv')
+df = pd.read_csv('P2_2_books.csv', index_col=False, names=['category', 'title', 'product_page_url', 'universal_product_code', 'price_including_tax', 'price_excluding_tax','number_available', 'product_description','review_rating','image_url'])
+df.to_csv('P2_3_BooksDF.csv')
