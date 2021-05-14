@@ -5,3 +5,4 @@ bs4 == 0.0.1
 pandas == 1.2.4
 Python == 3.8.5
 requests == 2.22.0
+urllib == 1.25.8
